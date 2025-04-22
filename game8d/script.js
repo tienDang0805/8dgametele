@@ -11,7 +11,7 @@ let activePoops = [];
 let lastPoopTime = 0;
 let poopInterval = 1000;
 let maxActivePoops = 3;
-let giantPoopChance = 0.005;
+let giantPoopChance = 0.01;
 let gameOver = false;
 
 // Kích thước Hoà
