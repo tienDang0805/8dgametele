@@ -1,0 +1,66 @@
+body {
+    margin: 0;
+    background: #f2e6d9;
+    overflow: hidden;
+    font-family: 'Comic Sans MS', sans-serif;
+  }
+  
+  #game-container {
+    width: 100vw;
+    height: 100vh;
+    position: relative;
+    background: linear-gradient(#d2f0ff, #ffe8d2);
+  }
+  
+  #hoa {
+    width: 150px; /* Tăng kích thước */
+    position: absolute;
+    bottom: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    transition: transform 0.2s; /* Thêm hiệu ứng mượt */
+    z-index: 2;
+  }
+  
+  #poop {
+    width: 40px;
+    position: absolute;
+    top: -40px;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+  
+  #score {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    font-size: 20px;
+    color: #333;
+  }
+  
+  #message {
+    position: absolute;
+    bottom: 120px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 28px;
+    font-weight: bold;
+    color: #d9534f;
+    opacity: 0;
+    transition: opacity 0.3s;
+    
+  }
+  .poop {
+    position: absolute;
+    z-index: 1;
+    transition: all 0.1s;
+  }
+  
+  #game-container {
+    width: 100vw;
+    height: 100vh;
+    position: relative;
+    background: linear-gradient(#d2f0ff, #ffe8d2);
+    overflow: hidden;
+  }
+  
