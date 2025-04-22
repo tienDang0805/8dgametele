@@ -5,7 +5,14 @@
   <title>Hoà Đớp Cứt</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <script src="https://telegram.org/js/games.js"></script>
-  <link rel="stylesheet" href="style.css" />
+  <script>
+    TelegramGame.init({
+      share_score: true, // Cho phép chia sẻ điểm
+      update_score: function(score) {
+        TelegramGame.setScore(score); // Gửi điểm lên Telegram
+      }
+    });
+  </script>  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
   <div id="game-container">
