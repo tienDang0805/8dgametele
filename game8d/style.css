@@ -63,4 +63,28 @@ body {
     background: linear-gradient(#d2f0ff, #ffe8d2);
     overflow: hidden;
   }
+  .giant-poop {
+    z-index: 10;
+    animation: shake 0.5s infinite;
+  }
+  
+  @keyframes shake {
+    0% { transform: rotate(0deg); }
+    25% { transform: rotate(5deg); }
+    50% { transform: rotate(0deg); }
+    75% { transform: rotate(-5deg); }
+    100% { transform: rotate(0deg); }
+  }
+  
+  #message {
+    font-size: 28px;
+    font-weight: bold;
+    color: #d9534f;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+    background-color: rgba(255,255,255,0.7);
+    padding: 15px;
+    border-radius: 10px;
+    width: 80%;
+    max-width: 400px;
+  }
   
