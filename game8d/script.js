@@ -5,29 +5,26 @@ const message = document.getElementById("message");
 
 // Cài đặt game
 let score = 0;
-let baseSpeed = 3.0; // Tăng tốc độ 1.5 lần
+let baseSpeed = 3.0;
 let gameRunning = true;
 let activePoops = [];
 let lastPoopTime = 0;
 let poopInterval = 1000;
-let maxActivePoops = 3; // Bắt đầu với 3 cục
-let giantPoopChance = 0.005; // 0.5% cơ hội xuất hiện cục khổng lồ
+let maxActivePoops = 3;
+let giantPoopChance = 0.005;
+let gameOver = false;
 
 // Kích thước Hoà
 hoa.style.width = "150px";
 
-// Điều khiển bằng chuột
 gameContainer.addEventListener("mousemove", (e) => {
-  if (!gameRunning) return;
-  
-  const rect = gameContainer.getBoundingClientRect();
-  let x = e.clientX - rect.left - hoa.offsetWidth / 2;
-  x = Math.max(0, Math.min(x, rect.width - hoa.offsetWidth));
-  hoa.style.left = `${x}px`;
-});
-
+    const rect = gameContainer.getBoundingClientRect();
+    let x = e.clientX - rect.left - hoa.offsetWidth / 2;
+    x = Math.max(0, Math.min(x, rect.width - hoa.offsetWidth));
+    hoa.style.left = `${x}px`;
+  });
 function createPoop() {
-  if (activePoops.length >= maxActivePoops) return null;
+  if (activePoops.length >= maxActivePoops || gameOver) return null;
   
   const isGiant = Math.random() < giantPoopChance;
   const poop = document.createElement("img");
@@ -35,9 +32,8 @@ function createPoop() {
   poop.className = "poop";
   poop.style.position = "absolute";
   
-  // Random kích thước
   if (isGiant) {
-    poop.style.width = "300px"; // Gấp đôi Hoà
+    poop.style.width = "300px";
     poop.style.height = "300px";
     poop.classList.add("giant-poop");
   } else {
@@ -61,13 +57,15 @@ function createPoop() {
 }
 
 function updatePoops() {
+  if (gameOver) return;
+  
   const now = Date.now();
   
   // Tạo cục mới
   if (now - lastPoopTime > poopInterval && activePoops.length < maxActivePoops) {
     createPoop();
     lastPoopTime = now;
-    poopInterval = Math.max(500, 1200 - score * 5); // Tempo tăng dần
+    poopInterval = Math.max(500, 1200 - score * 5);
   }
   
   // Cập nhật vị trí các cục
@@ -89,7 +87,8 @@ function updatePoops() {
     
     if (hit) {
       if (poop.isGiant) {
-        endGame("Cứt to quá đéo đớp nổi\nPhải cút thôi!");
+        showGiantPoopHit(poop.element);
+        endGame("Cứt to quá đéo đớp nổi<br>Phải cút thôi!");
         return;
       }
       
@@ -111,15 +110,28 @@ function updatePoops() {
       poop.element.remove();
       activePoops.splice(i, 1);
       if (!poop.isGiant) {
-        endGame("Thua rồi thằng ngu!\nBỏ sót cục cứt rồi!");
+        endGame("Thua rồi thằng ngu!<br>Bỏ sót cục cứt rồi!");
       }
       return;
     }
   }
   
-  if (gameRunning) {
+  if (gameRunning && !gameOver) {
     requestAnimationFrame(updatePoops);
   }
+}
+
+function showGiantPoopHit(poopElement) {
+  // Hiệu ứng khi đụng cục to
+  poopElement.style.transition = "all 0.5s";
+  poopElement.style.transform = "scale(1.5)";
+  poopElement.style.opacity = "0.5";
+  
+  // Hiệu ứng rung màn hình
+  gameContainer.style.animation = "shake 0.5s linear";
+  setTimeout(() => {
+    gameContainer.style.animation = "";
+  }, 500);
 }
 
 function showMessage() {
@@ -136,30 +148,46 @@ function showMessage() {
 }
 
 function endGame(reason) {
+  gameOver = true;
   gameRunning = false;
-  message.innerHTML = reason ? reason : `Game Over!<br>Điểm: ${score}`;
-  message.innerHTML += `<br><br>Click để chơi lại`;
+  
+  // Dừng tất cả cục cứt
+  activePoops.forEach(poop => {
+    poop.element.style.animationPlayState = "paused";
+  });
+  
+  // Hiển thị thông báo
+  message.innerHTML = `
+    <div style="background: rgba(0,0,0,0.7); padding: 20px; border-radius: 10px;">
+      <div style="font-size: 32px; color: red; margin-bottom: 10px;">${reason.split('<br>')[0]}</div>
+      <div style="font-size: 24px; color: white;">${reason.split('<br>')[1] || ''}</div>
+      <div style="font-size: 28px; color: yellow; margin: 15px 0;">Điểm: ${score}</div>
+      <div style="font-size: 20px; color: white;">Click để chơi lại</div>
+    </div>
+  `;
   message.style.opacity = 1;
   message.style.cursor = "pointer";
-  message.style.textAlign = "center";
-  message.style.lineHeight = "1.5";
   message.addEventListener("click", restartGame);
-  
-  // Xóa hết cục còn lại
-  activePoops.forEach(poop => poop.element.remove());
-  activePoops = [];
 }
 
 function restartGame() {
+  // Xóa hết cục cũ
+  activePoops.forEach(poop => poop.element.remove());
+  activePoops = [];
+  
+  // Reset game
   score = 0;
   baseSpeed = 3.0;
   gameRunning = true;
+  gameOver = false;
   maxActivePoops = 3;
   giantPoopChance = 0.005;
   scoreDisplay.innerText = `Score: ${score}`;
   message.style.opacity = 0;
   message.style.cursor = "default";
   message.removeEventListener("click", restartGame);
+  
+  // Bắt đầu lại
   updatePoops();
 }
 
