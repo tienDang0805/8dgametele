@@ -13,6 +13,20 @@
       }
     });
   </script>  <link rel="stylesheet" href="style.css" />
+  <script>
+    // Kiểm tra xem có đang chạy trong Telegram không
+    if (window.Telegram && window.Telegram.WebApp) {
+      Telegram.WebApp.expand(); // Mở rộng full màn hình
+      Telegram.WebApp.ready(); // Báo hiệu đã sẵn sàng
+      
+      // Gửi điểm khi game kết thúc
+      function updateScore(score) {
+        if (window.TelegramGame) {
+          TelegramGame.setScore(score);
+        }
+      }
+    }
+  </script>
 </head>
 <body>
   <div id="game-container">
