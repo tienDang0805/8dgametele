@@ -168,6 +168,13 @@ function endGame(reason) {
   message.style.opacity = 1;
   message.style.cursor = "pointer";
   message.addEventListener("click", restartGame);
+  if (window.Telegram?.WebApp) {
+    const data = {
+      score: score,
+      action: "game_over"
+    }
+    Telegram.WebApp.sendData(JSON.stringify(data))
+  }
 }
 
 function restartGame() {
